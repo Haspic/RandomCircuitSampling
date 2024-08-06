@@ -36,4 +36,3 @@ class single_line_circuit(object):
 
     def make_measurement(self, measured_state):
         return self._compute_line(measured_state)
-
