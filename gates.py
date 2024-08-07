@@ -6,10 +6,16 @@ import numpy as np
 def kron(*mat):
     """Kronecker product of N number of matrices"""
 
-    product = mat[0]
+    if type(mat[0]) == Gate:
+        product = mat[0].get_mat()
+    else:
+        product = mat[0]
 
     for i in range(1, len(mat)):
-        product = np.kron(product, mat[i])
+        if type(mat[i]) == Gate:
+            product = np.kron(product, mat[i].get_mat())
+        else:
+            product = np.kron(product, mat[i])
 
     return product
 
