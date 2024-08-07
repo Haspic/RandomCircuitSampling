@@ -8,7 +8,7 @@ class multiple_qubits_circuit(object):
     def __init__(self, circuit_size):
         self.size = circuit_size
 
-        self.gates = np.array([])
+        self.gates = []
         self.initial_state = np.zeros(circuit_size * 2)
         self.measurement_state = None
 
@@ -38,10 +38,10 @@ class multiple_qubits_circuit(object):
             for i in range(self.size):
                 # If qubit is before gate (from top to bottom)
                 if i < index:
-                    tensorProduct = np.kron(_I, result)
+                    result = np.kron(_I.get_mat(), result)
                 # If qubit is after gate (from top to bottom)
                 elif i > index:
-                    tensorProduct = np.kron(result, _I)
+                    result = np.kron(result, _I.get_mat())
 
         elif type(index) in [list, tuple]:
             # Complex/controlled gate case
@@ -54,27 +54,27 @@ class multiple_qubits_circuit(object):
             for i in range(self.size):
                 # If qubit is before gate (from top to bottom)
                 if i < index[0]:
-                    tensorProduct = np.kron(_I, tensorProduct)
+                    tensorProduct = np.kron(_I.get_mat(), tensorProduct)
                 # If qubit is after gate (from top to bottom)
                 elif i > index[0]:
-                    tensorProduct = np.kron(tensorProduct, _I)
+                    tensorProduct = np.kron(tensorProduct, _I.get_mat())
 
             result += tensorProduct
 
             # SECOND activator matrix
-            tensorProduct = gate.activators[0]
+            tensorProduct = gate.activators[1]
 
             for i in range(self.size):
                 # If qubit is before gate (from top to bottom)
                 if i < index[0]:
-                    tensorProduct = np.kron(_I, tensorProduct)
-                # If qubit is after gate (from top to bottom)
-                elif i > index[0]:
-                    tensorProduct = np.kron(tensorProduct, _I)
+                    tensorProduct = np.kron(_I.get_mat(), tensorProduct)
                 elif i == index[1]:
                     tensorProduct = np.kron(tensorProduct, gate.get_mat())
+                # If qubit is after gate (from top to bottom)
+                elif i > index[0]:
+                    tensorProduct = np.kron(tensorProduct, _I.get_mat())
                 elif i > index[1]:
-                    tensorProduct = np.kron(tensorProduct, _I)
+                    tensorProduct = np.kron(tensorProduct, _I.get_mat())
 
             result += tensorProduct
 
@@ -82,20 +82,23 @@ class multiple_qubits_circuit(object):
             raise TypeError("Index must be an int, list or tuple")
 
         # Add final tensor product to dot product step
-        self.gates = np.append(self.gates, result)
+        self.gates.append(result)
 
-    def get_probabilities(self):
+    def get_state(self):
 
         if self.measurement_state is None:
             raise ValueError("Measurement state is not defined")
 
         result = self.measurement_state
 
-        for gate in self.gates[::-1]:
+        for gate in np.array(self.gates)[::-1]:
             result = np.dot(result, gate)
 
         result = np.dot(result, self.initial_state)
+        return result
 
+    def get_probabilities(self):
+        result = self.get_state()
         return np.abs(result) ** 2
 
             #
