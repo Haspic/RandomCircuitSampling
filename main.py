@@ -1,18 +1,40 @@
 
 import numpy as np
+from gates import _0, _1, _X, _CX
+from gates import kron
+
+""" SINGLE LINE CIRCUIT """
+
 from single_line_circuit import single_line_circuit
 
 # Initial state
-I = np.array([0, 1])
-
-# Gates
-X = np.array([[0, 1], [1, 0]])
+# init = np.array([0, 1])
 
 # Measurement state
-M = np.array([0, 1])
+# meas = np.array([1, 0])
 
-circuit = single_line_circuit()
-circuit.set_initial_state(I)
-circuit.set_gates(X)
+# circuit = single_line_circuit()
+# circuit.set_initial_state(init)
+# circuit.set_gates(X, X, X)
+#
+# print(circuit.make_measurement(meas))
 
-print(circuit.make_measurement(M))
+""" MULTIPLE LINE CIRCUIT """
+
+from multiple_qubits_circuit import multiple_qubits_circuit
+
+
+circuit = multiple_qubits_circuit(2)
+
+init = kron(_0, _0)
+meas = kron(_0, _0)
+
+circuit.add_initial_state(init)
+
+circuit.add_gate(_X, index=0)
+circuit.add_gate(_CX, index=(0, 1))
+
+circuit.add_measurement_state(meas)
+
+r = circuit.get_probabilities()
+print(r)
