@@ -25,9 +25,11 @@ def kron(*mat):
 
 class Gate(object):
 
-    def __init__(self, mat: np.ndarray, activators=None):
+    def __init__(self, mat: np.ndarray, activators=None, name=None):
         self.mat = mat
         self.activators = activators
+
+        self.name = name
 
     def get_mat(self):
         return self.mat.copy()
@@ -36,8 +38,8 @@ class Gate(object):
 """ ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### """
 
 # 0 and 1 bits
-_0 = Gate(np.array([1, 0]))
-_1 = Gate(np.array([0, 1]))
+_0 = Gate(np.array([1, 0]), name="0")
+_1 = Gate(np.array([0, 1]), name="1")
 
 # Identity matrix
 _I = Gate(np.array([[1, 0],
