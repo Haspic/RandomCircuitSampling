@@ -46,37 +46,31 @@ class multiple_qubits_circuit(object):
         elif type(index) in [list, tuple]:
             # Complex/controlled gate case
 
+            # "activator" (usually but can be inverted)
+            first_gates = gate.activators
+            # "gate matrix"
+            last_gates = [_I.get_mat(), gate.get_mat()]
+
             result = np.zeros((2 ** self.size) ** 2).reshape(2 ** self.size, 2 ** self.size)
 
-            # FIRST activator matrix
-            tensorProduct = gate.activators[0]
 
-            for i in range(self.size):
-                # If qubit is before gate (from top to bottom)
-                if i < index[0]:
-                    tensorProduct = np.kron(_I.get_mat(), tensorProduct)
-                # If qubit is after gate (from top to bottom)
-                elif i > index[0]:
-                    tensorProduct = np.kron(tensorProduct, _I.get_mat())
+            for j in range(2):
 
-            result += tensorProduct
+                tensorProduct = first_gates[j]
 
-            # SECOND activator matrix
-            tensorProduct = gate.activators[1]
+                for i in range(self.size):
+                    # If qubit is before gate (from top to bottom)
+                    if i < index[0]:
+                        tensorProduct = np.kron(_I.get_mat(), tensorProduct)
+                    elif i == index[1]:
+                        tensorProduct = np.kron(tensorProduct, last_gates[j])
+                    # If qubit is after gate (from top to bottom)
+                    elif i > index[0]:
+                        tensorProduct = np.kron(tensorProduct, _I.get_mat())
+                    elif i > index[1]:
+                        tensorProduct = np.kron(tensorProduct, _I.get_mat())
 
-            for i in range(self.size):
-                # If qubit is before gate (from top to bottom)
-                if i < index[0]:
-                    tensorProduct = np.kron(_I.get_mat(), tensorProduct)
-                elif i == index[1]:
-                    tensorProduct = np.kron(tensorProduct, gate.get_mat())
-                # If qubit is after gate (from top to bottom)
-                elif i > index[0]:
-                    tensorProduct = np.kron(tensorProduct, _I.get_mat())
-                elif i > index[1]:
-                    tensorProduct = np.kron(tensorProduct, _I.get_mat())
-
-            result += tensorProduct
+                result += tensorProduct
 
         else:
             raise TypeError("Index must be an int, list or tuple")
