@@ -1,0 +1,12 @@
+[project]
+name = 'qcs'
+version = '0.1.0'
+description = 'Quantum Circuit Simulator'
+dependencies = ['numpy']
+
+[build-system]
+requires = ['setuptools']
+build-backend = 'setuptools.build_meta'
+
+[tool.setuptools.packages.find]
+where = ['qcs']
