@@ -32,27 +32,18 @@ class Gate(object):
     def get_mat(self):
         return self.mat.copy()
 
-# class SimpleGate(Gate):
-#
-#     def __init__(self, mat: np.ndarray):
-#         super().__init__(mat)
-#
-#
-# class ControlledGate(Gate):
-#
-#     def __init__(self, mat: np.ndarray):
-#         super().__init__(mat)
-
 
 """ ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### """
 
-
+# 0 and 1 bits
 _0 = Gate(np.array([1, 0]))
 _1 = Gate(np.array([0, 1]))
 
+# Identity matrix
 _I = Gate(np.array([[1, 0],
                     [0, 1]]))
 
+# Pauli matrices
 _X = Gate(np.array([[0, 1],
                     [1, 0]]))
 _Y = Gate(np.array([[0, -1j],
@@ -60,19 +51,34 @@ _Y = Gate(np.array([[0, -1j],
 _Z = Gate(np.array([[1, 0],
                     [0, -1]]))
 
-_CX = Gate(np.array([[0, 1],  # X gate
+# phase gate
+_S = Gate(np.array([[1, 0],
+                    [0, 1j]]))
+# square root of X
+_sqrt = Gate(1/2 * np.array([[1+1j, 1-1j],
+                             [1-1j, 1+1j]]))
+# Hadamard
+_H = Gate(1/np.sqrt(2) * np.array([[1, 1],
+                                   [1, -1]]))
+
+# CNOT / controlled-X gate
+_CX = Gate(np.array([[0, 1],   # X gate
                      [1, 0]]),
            np.array([[[1, 0],  # |0> <0| activator
                       [0, 0]],
                      [[0, 0],  # |1> <1| activator
                       [0, 1]]]))
-
-_CY = Gate(np.array([[1, 0, 0, 0],
-                     [0, 1, 0, 0],
-                     [0, 0, 0, -1j],
-                     [0, 0, 1j, 0]]))
-_CZ = Gate(np.array([[1, 0, 0, 0],
-                     [0, 1, 0, 0],
-                     [0, 0, 1, 0],
-                     [0, 0, 0, -1]]))
-
+# controlled-Y
+_CY = Gate(np.array([[0, -1j], # Y gate
+                    [1j, 0]]),
+           np.array([[[1, 0],  # |0> <0| activator
+                      [0, 0]],
+                     [[0, 0],  # |1> <1| activator
+                      [0, 1]]]))
+# controlled-Z
+_CZ = Gate(np.array([[1, 0],   # Z gate
+                    [0, -1]]),
+           np.array([[[1, 0],  # |0> <0| activator
+                      [0, 0]],
+                     [[0, 0],  # |1> <1| activator
+                      [0, 1]]]))
