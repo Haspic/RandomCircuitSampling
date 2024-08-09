@@ -5,25 +5,30 @@ All code is included in the "packageForm" file. Download this file and install t
 Usage example:
 
 ```
-from qcs import circuit, kron
+from qcs import kron, gates, circuit
+
 from qcs.gates import _0, _1, _I, _X, _Y, _Z
 from qcs.gates import _S, _sqrt, _H, _CX, _CY, _CZ
 
-circuit = multiple_qubits_circuit(2) # number of qubits
+c = circuit(2)
 
-# kron function takes an arbitrary amount of arguments
 init = kron(_0, _0)
-meas = kron(_0, _0)
+meas = kron(_1, _1)
 
-circuit.add_gate(_H, index=0)
-circuit.add_gate(_CX, index=(0, 1))
-circuit.add_gate(_H, index=1)
+c.add_gate(_H, index=0)
+c.add_gate(_CX, index=(0, 1))
+c.add_gate(_H, index=1)
 
-circuit.set_initial_state(init)
+c.set_initial_state(init)
 
-# circuit._set_measurement_state(meas)
-# result = circuit.get_state()
+# Get matrix form before dot product with meas and init state
+# init = kron(_I, _I)
+# meas = kron(_I, _I)
+# c.set_initial_state(init)
+# c._set_measurement_state(meas)
+# result = c.get_state()
 
-r = circuit.get_probabilities(measurement)
+# Get prob of given meas state
+c.get_probabilities(meas)
 ```
 
