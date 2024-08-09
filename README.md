@@ -22,6 +22,9 @@ c.add_gate(_H, index=1)
 c.set_initial_state(init)
 
 # Get matrix form before dot product with meas and init state
+# init = kron(_I, _I)
+# meas = kron(_I, _I)
+# c.set_initial_state(init)
 # c._set_measurement_state(meas)
 # result = c.get_state()
 
