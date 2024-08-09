@@ -7,7 +7,7 @@ from .gates import _0, _1, _I, _X
 from .gates import kron
 
 
-class multiple_qubits_circuit(object):
+class circuit(object):
 
     def __init__(self, circuit_size):
         self.size = circuit_size
@@ -97,6 +97,7 @@ class multiple_qubits_circuit(object):
         return result
 
     def make_measurement(self):
+        """Make measurement of all possible state of the circuit and return probabilities of possible states"""
 
         measurement_states = list(itl.product([_0, _1], repeat=self.size))
         probabilities = [self.get_probabilities(kron(*state)) for state in measurement_states]
@@ -106,6 +107,8 @@ class multiple_qubits_circuit(object):
         return elt[0]
 
     def get_probabilities(self, measurement_state):
+        """Retrieve probabilities for given measurement state"""
+
         self._set_measurement_state(measurement_state)
         result = self.get_state()
         return np.abs(result) ** 2
